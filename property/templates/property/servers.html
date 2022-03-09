@@ -1,0 +1,103 @@
+{% extends 'web/base.html' %}
+{% load static %}
+{% block title %} 服务器列表 {% endblock %}
+
+{% block content %}
+
+<div class="breadcrumbs">
+    <div class="breadcrumbs-inner">
+        <div class="row m-0">
+            <div class="col-sm-4">
+                <div class="page-header float-left">
+                    <div class="page-title">
+                        <h1>仪表盘</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-8">
+                <div class="page-header float-right">
+                    <div class="page-title">
+                        <ol class="breadcrumb text-right">
+                            <li><a href="#">仪表盘</a></li>
+                            <li><a href="#">资产</a></li>
+                            <li class="active">服务器列表</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="content">
+    <div class="animated fadeIn">
+        <div class="row">
+            <div class="col-md-12">
+                
+                <div class="jumbotron">
+                {{ result }}
+              </div>
+            </div>
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header">
+                        <strong class="card-title">服务器列表</strong>
+                    </div>
+                    {% for server in servers %}
+                    <div class="table-stats order-table ov-h">
+                        <table class="table ">
+                            <thead>
+                                <tr>
+                                    <th class="serial">#</th>
+                                    <th class="avatar">系统</th>
+                                    <th>名称
+                                    <th>IP地址</th>
+                                    <th>SSH端口</th>
+                                    <th>执行用户</th>
+                                    <th>是否在线</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="serial">{{server.id}}</td>
+                                    <td class="avatar">
+                                        <div class="round-img">
+                                            <img class="rounded-circle" src="/media/system/{{server.os}}.jpg" alt="">
+                                        </div>
+                                    </td>
+                                    <td>  <span class="name">{{server.name}}</span> </td>
+                                    <td> <span class="name">{{server.ip}}</span> </td>
+                                    <td> <span class="name">{{server.ssh_port}}</span> </td>
+                                    <td><span class="name">{{server.exec_user}}</span></td>
+                                    {% if server.is_online %}
+                                    <td>
+                                        <span class="badge badge-complete">在线</span>
+                                    </td>
+                                    {% else %}
+                                    <td>
+                                        <span class="badge badge-danger">离线</span>
+                                    </td>
+                                    {% endif %}
+                                    <td>
+                                        <button onclick="window.location.href='/property/ping?server_id={{server.id}}'" type="button" class="btn btn-success btn-sm">ping</button>
+                                    </td>
+                                </tr>
+                 
+                            </tbody>
+                        </table>
+                    </div> <!-- /.table-stats -->
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div><!-- .row -->
+    </div><!-- .animated -->
+</div><!-- .content -->
+
+
+<div class="clearfix"></div>
+
+  {% endblock %}

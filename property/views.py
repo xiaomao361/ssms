@@ -9,7 +9,7 @@ import subprocess
 # Create your views here.
 # 服务器列表
 def servers(request):
-    servers = models.Server.objects.all()
+    servers = models.Server.objects.all().order_by("c_time")
     return render(request, 'property/servers.html',
                   {'servers': servers, })
 
@@ -27,15 +27,15 @@ def ping(request):
         cmd = ansible + ' -i ' + hosts + ' ' + \
             server.name + ' ' + '-m ping' + ' -u ' + user
         try:
-            # os.system(cmd)
             result = subprocess.check_output(cmd, shell=True)
-            if server.is_online == False:
-                server.update(is_online=True)
+            if len(result) > 0:
+                if server.is_online == False:
+                    models.Server.objects.filter(id=server_id).update(is_online=True)
+            elif server.is_online == True:
+                models.Server.objects.filter(id=server_id).update(is_online=False)
         except Exception as e:
-            if server.is_online == True:
-                server.update(is_online=False)
             result = e
-    servers = models.Server.objects.all()  # 这部分写的太二了，考虑用ajax重置，先实现功能
+    servers = models.Server.objects.all()  # 这部分写的太二了，考虑重置，先实现功能
     return render(request, 'property/servers.html',
                   {'servers': servers,
                    'result': result, })

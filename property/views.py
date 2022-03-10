@@ -4,6 +4,8 @@ from property import models
 from member import models as member_models
 import os
 import subprocess
+from django.shortcuts import HttpResponse
+import json
 
 
 # Create your views here.
@@ -36,6 +38,9 @@ def ping(request):
         except Exception as e:
             result = e
     servers = models.Server.objects.all()  # 这部分写的太二了，考虑重置，先实现功能
-    return render(request, 'property/servers.html',
-                  {'servers': servers,
-                   'result': result, })
+    # return render(request, 'property/servers.html',
+    #               {'servers': servers,
+    #                'result': result, })
+    data = dict()
+    data.update(result=str(result))
+    return HttpResponse(json.dumps(data))

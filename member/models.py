@@ -1,6 +1,5 @@
 from django.db import models
 import hashlib
-from ckeditor.fields import RichTextField
 
 
 # Create your models here.

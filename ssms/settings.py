@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'tool', # 工具模块
     'property', # 资产模块
     'script', # 脚本模块
+    'conf', # 配置模块
 ]
 
 MIDDLEWARE = [
@@ -77,6 +78,7 @@ TEMPLATES = [
                 'wiki.public.categorys',
                 'member.public.user',
                 'script.public.languages',
+                'conf.public.conf_types',
             ],
         },
     },

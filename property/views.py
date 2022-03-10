@@ -31,6 +31,14 @@ def ping(request):
             server.name + ' ' + '-m ping' + ' -u ' + user
 
     result = subprocess.getoutput(cmd)
+    status = re.findall(r'.\|(.*)\=>.',result)[0]
+    if re.sub(' ','', status)  == 'SUCCESS':
+        if server.is_online == False:
+            models.Server.objects.filter(id=server_id).update(is_online=True)
+    else:
+        if server.is_online == True:
+            models.Server.objects.filter(id=server_id).update(is_online=False)
+
     data = {}
     data.update(ip=server.ip)
     data.update(result=result[result.index("{"):])

@@ -1,5 +1,6 @@
 import imp
-from django.shortcuts import render, redirect
+import re
+from django.shortcuts import render
 from property import models
 from member import models as member_models
 import os
@@ -28,19 +29,9 @@ def ping(request):
         user = member_models.ExecUser.objects.get(name=server.exec_user).name
         cmd = ansible + ' -i ' + hosts + ' ' + \
             server.name + ' ' + '-m ping' + ' -u ' + user
-        try:
-            result = subprocess.check_output(cmd, shell=True)
-            if len(result) > 0:
-                if server.is_online == False:
-                    models.Server.objects.filter(id=server_id).update(is_online=True)
-            elif server.is_online == True:
-                models.Server.objects.filter(id=server_id).update(is_online=False)
-        except Exception as e:
-            result = e
-    servers = models.Server.objects.all()  # 这部分写的太二了，考虑重置，先实现功能
-    # return render(request, 'property/servers.html',
-    #               {'servers': servers,
-    #                'result': result, })
-    data = dict()
-    data.update(result=str(result))
+
+    result = subprocess.getoutput(cmd)
+    data = {}
+    data.update(ip=server.ip)
+    data.update(result=result[result.index("{"):])
     return HttpResponse(json.dumps(data))

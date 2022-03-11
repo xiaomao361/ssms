@@ -32,6 +32,8 @@
         <link rel="stylesheet" href="{% static 'assets/css/jqvmap.min.css' %}">
         <link rel="stylesheet" href="{% static 'assets/css/weather-icons.css' %}">
         <link rel="stylesheet"
+              href="{% static 'assets/css/lib/chosen/chosen.min.css' %}">
+        <link rel="stylesheet"
               href="{% static 'assets/css/fullcalendar.min.css' %}">
     </head>
     <body>
@@ -86,7 +88,7 @@
                                aria-expanded="false"> <i class="menu-icon fa fa-tasks"></i>批量任务</a>
                             <ul class="sub-menu children dropdown-menu">
                                 <li>
-                                    <i class="menu-icon fa fa-terminal"></i><a href="#">批量命令</a>
+                                    <i class="menu-icon fa fa-terminal"></i><a href="/job/cmd">批量命令</a>
                                 </li>
                                 <li>
                                     <i class="menu-icon fa fa-file-text"></i><a href="#">批量脚本</a>
@@ -179,12 +181,12 @@
                                         你有 {{ unreads | length }} 个未读消息
                                     </p>
                                     {% for unread in unreads %}
-                                    <a class="dropdown-item media" href="#">
-                                        <i class="fa fa-check"></i>
-                                        <p>
-                                            {{ unread.content }}
-                                        </p>
-                                    </a>
+                                        <a class="dropdown-item media" href="#">
+                                            <i class="fa fa-check"></i>
+                                            <p>
+                                                {{ unread.content }}
+                                            </p>
+                                        </a>
                                     {% endfor %}
                                 </div>
                             </div>
@@ -270,6 +272,8 @@
         <script src="{% static 'assets/js/init/moment.min.js' %}"></script>
         <script src="{% static 'assets/js/init/fullcalendar.min.js' %}"></script>
         <script src="{% static 'assets/js/init/fullcalendar-init.js' %}"></script>
+        <script src="{% static 'assets/js/lib/chosen/chosen.jquery.min.js' %}"></script>
+        
         <!--Local Stuff-->
         {% block script %}
         {% endblock script %}

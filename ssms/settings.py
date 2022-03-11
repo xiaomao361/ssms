@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'script', # 脚本模块
     'conf', # 配置模块
     'notice', # 消息模块
+    'job', # 任务模块
 ]
 
 MIDDLEWARE = [

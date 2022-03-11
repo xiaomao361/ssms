@@ -22,5 +22,6 @@ urlpatterns = [
 
     url(r'^list/', views.list),
     url(r'^content/', views.content),
+    url(r'^make_file/', views.make_file),
 
 ]

@@ -21,7 +21,7 @@ def ping(request):
 
     # ansible 命令及hosts文件配置
     ansible = '/usr/local/bin/ansible'
-    hosts = './media/system/hosts'
+    hosts = './tmp/hosts'
 
     if request.GET.get('server_id'):
         server_id = request.GET.get('server_id')

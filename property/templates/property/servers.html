@@ -1,6 +1,8 @@
 {% extends "web/base.html" %}
 {% load static %}
-{% block title %}服务器列表{% endblock title %}
+{% block title %}
+    服务器列表
+{% endblock title %}
 {% block content %}
     <div class="breadcrumbs">
         <div class="breadcrumbs-inner">
@@ -54,95 +56,92 @@
                                     <tr>
                                         <th class="serial">#</th>
                                         <th class="avatar">系统</th>
-                                            <th>名称</th>
-                                            <th>IP地址</th>
-                                            <th>SSH端口</th>
-                                            <th>执行用户</th>
-                                            <th>是否在线</th>
-                                            <th>操作</th>
+                                        <th>名称</th>
+                                        <th>IP地址</th>
+                                        <th>SSH端口</th>
+                                        <th>执行用户</th>
+                                        <th>是否在线</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                {% for server in servers %}
+                                    <tbody>
+                                        <tr>
+                                            <td class="serial">{{ server.id }}</td>
+                                            <td class="avatar">
+                                                <div class="round-img">
+                                                    <img class="rounded-circle" src="/media/system/{{ server.os }}.jpg" alt="">
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span class="name">{{ server.name }}</span>
+                                            </td>
+                                            <td>
+                                                <span class="ip">{{ server.ip }}</span>
+                                            </td>
+                                            <td>
+                                                <span class="ssh_port">{{ server.ssh_port }}</span>
+                                            </td>
+                                            <td>
+                                                <span class="exec_user">{{ server.exec_user }}</span>
+                                            </td>
+                                            {% if server.is_online %}
+                                                <td>
+                                                    <span class="badge badge-complete">在线</span>
+                                                </td>
+                                            {% else %}
+                                                <td>
+                                                    <span class="badge badge-danger">离线</span>
+                                                </td>
+                                            {% endif %}
+                                            <td>
+                                                <button id={{ server.id }} data-id={{ server.id }} type="button" class="btn btn-success btn-sm"> ping
+                                                </button>
+                                            </td>
                                         </tr>
-                                    </thead>
-                                    {% for server in servers %}
-                                        <tbody>
-                                            <tr>
-                                                <td class="serial">{{ server.id }}</td>
-                                                <td class="avatar">
-                                                    <div class="round-img">
-                                                        <img class="rounded-circle" src="/media/system/{{ server.os }}.jpg" alt="">
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <span class="name">{{ server.name }}</span>
-                                                </td>
-                                                <td>
-                                                    <span class="ip">{{ server.ip }}</span>
-                                                </td>
-                                                <td>
-                                                    <span class="ssh_port">{{ server.ssh_port }}</span>
-                                                </td>
-                                                <td>
-                                                    <span class="exec_user">{{ server.exec_user }}</span>
-                                                </td>
-                                                {% if server.is_online %}
-                                                    <td>
-                                                        <span class="badge badge-complete">在线</span>
-                                                    </td>
-                                                {% else %}
-                                                    <td>
-                                                        <span class="badge badge-danger">离线</span>
-                                                    </td>
-                                                {% endif %}
-                                                <td>
-                                                    {% comment %} <button onclick="window.location.href='/property/ping?server_id={{server.id}}'"
-         type="button"
-         class="btn btn-success btn-sm">ping</button> {% endcomment %}
-                                                    <button id={{ server.id }} data-id={{ server.id }} type="button" class="btn btn-success btn-sm">ping
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    {% endfor %}
-                                </table>
-                            </div>
-                            <!-- /.table-stats -->
+                                    </tbody>
+                                {% endfor %}
+                            </table>
                         </div>
+                        <!-- /.table-stats -->
                     </div>
                 </div>
-                <!-- .row -->
             </div>
-            <!-- .animated -->
+            <!-- .row -->
         </div>
-        <!-- .content -->
-        <div class="clearfix"></div>
-        <script src="https://code.jquery.com/jquery-3.0.0.min.js"></script>
-        <script>
+        <!-- .animated -->
+    </div>
+    <!-- .content -->
+    <div class="clearfix"></div>
+    <script src="https://code.jquery.com/jquery-3.0.0.min.js"></script>
+    <script>
 function appand(list){  
     var html = '<pre style="color: white">' + list +'</pre>';
-    $(html).appendTo($("#log"))
-}
+        $(html).appendTo($("#log"))
+    }
 
 
-$(".btn").click(function() {
-    var val=$(this).attr("data-id")
-    document.getElementById(val).disabled=true;
-    $.ajax({
+    $(".btn").click(function() {
+        var val=$(this).attr("data-id")
+        document.getElementById(val).disabled=true;
+        $.ajax({
       
-      url: '/property/ping',
-      dataType: "json",
-      type: "get",
-      data: {"server_id":val},
+          url: '/property/ping',
+          dataType: "json",
+          type: "get",
+          data: {"server_id":val},
       
-      success: function(result) {  
-          appand(result.ip)
-          appand(result.result)
-          document.getElementById(val).disabled=false;
-      },
+          success: function(result) {  
+              appand(result.ip)
+              appand(result.result)
+              document.getElementById(val).disabled=false;
+          },
       
-      error: function(data) {
-          console.log(data,"请求出错");
-          document.getElementById(val).disabled=false;
-      }
-    });
-  });
-        </script>
+          error: function(data) {
+              console.log(data,"请求出错");
+              document.getElementById(val).disabled=false;
+          }
+        });
+      });
+    </script>
 {% endblock content %}

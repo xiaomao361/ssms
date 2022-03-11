@@ -31,6 +31,7 @@ urlpatterns = [
     path('property/', include('property.urls')),
     path('script/', include('script.urls')),
     path('conf/', include('conf.urls')),
+    path('notice/', include('notice.urls')),
 
     url(r'^media/(?P<path>.*)$', serve,
         {"document_root": settings.MEDIA_ROOT}),

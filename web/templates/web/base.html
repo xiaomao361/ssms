@@ -69,7 +69,7 @@
                                aria-expanded="false"> <i class="menu-icon fa fa-bell"></i>通知</a>
                             <ul class="sub-menu children dropdown-menu">
                                 <li>
-                                    <i class="menu-icon fa fa-envelope"></i><a href="#">站内信</a>
+                                    <i class="menu-icon fa fa-envelope"></i><a href="/notice/list">站内信</a>
                                 </li>
                                 <li>
                                     <i class="menu-icon fa fa-inbox"></i><a href="#">收件箱</a>
@@ -172,18 +172,20 @@
                                         aria-haspopup="true"
                                         aria-expanded="false">
                                     <i class="fa fa-bell"></i>
-                                    <span class="count bg-danger">3</span>
+                                    <span class="count bg-danger">{{ unreads | length }}</span>
                                 </button>
                                 <div class="dropdown-menu" aria-labelledby="notification">
                                     <p class="red">
-                                        你有 x 个未读消息
+                                        你有 {{ unreads | length }} 个未读消息
                                     </p>
+                                    {% for unread in unreads %}
                                     <a class="dropdown-item media" href="#">
                                         <i class="fa fa-check"></i>
                                         <p>
-                                            一条消息示例.
+                                            {{ unread.content }}
                                         </p>
                                     </a>
+                                    {% endfor %}
                                 </div>
                             </div>
                             <div class="dropdown for-message">

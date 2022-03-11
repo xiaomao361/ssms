@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'property', # 资产模块
     'script', # 脚本模块
     'conf', # 配置模块
+    'notice', # 消息模块
 ]
 
 MIDDLEWARE = [
@@ -79,6 +80,8 @@ TEMPLATES = [
                 'member.public.user',
                 'script.public.languages',
                 'conf.public.conf_types',
+                'notice.public.messages',
+                'notice.public.unreads',
             ],
         },
     },

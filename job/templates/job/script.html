@@ -15,7 +15,7 @@
                         <div class="card-body card-block">
                             <div class="col-md-12">
                                 <div style="overflow:scroll;
-                                            height:555px;
+                                            height:515px;
                                             background:#000;
                                             color:#FFF;"
                                      class="jumbotron">
@@ -67,29 +67,45 @@
                     </div>
                     <div class="card">
                         <div class="card-header">
-                            <strong class="card-title">输入要执行的命令</strong>
+                            <strong class="card-title">选择要执行的脚本</strong>
                         </div>
                         <div class="card-body">
-                            <form action="#"
-                                  method="post"
-                                  enctype="multipart/form-data"
-                                  class="form-horizontal">
-                                <div class="row form-group">
-                                    <div class="col col-md-3">
-                                        <label for="textarea-input" class=" form-control-label">要执行的命令</label>
-                                    </div>
-                                    <div class="col-12 col-md-9">
-                                        <textarea name="textarea-input"
-                                                  id="textarea-input"
-                                                  rows="9"
-                                                  placeholder="Bash..."
-                                                  class="form-control"></textarea>
-                                    </div>
-                                </div>
-                                <button id="exec" type="button" class="btn btn-success btn-lg btn-block">执行</button>
-                            </form>
+                            <select id="exec_user"
+                                    data-placeholder="选择要执行的脚本"
+                                    class="standardSelect"
+                                    tabindex="1">
+                                <option value="" label="default">
+                                </option>
+                                {% for script in scripts %}
+                                    <option value={{ script.name }}>
+                                        {{ script.name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
                         </div>
                     </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <strong class="card-title">选择执行的剧本</strong>
+                        </div>
+                        <div class="card-body">
+                            <select id="exec_user"
+                                    data-placeholder="选择执行 剧本"
+                                    class="standardSelect"
+                                    tabindex="1">
+                                <option value="" label="default">
+                                </option>
+                                {% for conf in confs %}
+                                    {% if conf.type != "hosts" %}
+                                        <option value={{ conf.name }} >
+                                            {{ conf.name }}
+                                        </option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <button id="exec" type="button" class="btn btn-success btn-lg btn-block">执行</button>
                 </div>
             </div>
         </div>
@@ -110,43 +126,43 @@
     <script>
         function appand(log){  
             var html = '<pre style="color: white">' + log +'</pre>';
-                            $(html).appendTo($("#log"))
-                        }
+                                            $(html).appendTo($("#log"))
+                                        }
             
-            $("#exec").click(function() {
+                            $("#exec").click(function() {
 
-                $("#exec").disabled=true;
-                exec_name = $("#exec_user option:selected").val()
-                function getSelected() {  
-                    var servers=[];;  
-                    $('#server option:selected').each(function(){  
-                        servers.push($(this).val())  
-                    })  
+                                $("#exec").disabled=true;
+                                exec_name = $("#exec_user option:selected").val()
+                                function getSelected() {  
+                                    var servers=[];;  
+                                    $('#server option:selected').each(function(){  
+                                        servers.push($(this).val())  
+                                    })  
             
-                    return servers.join(" ");  
-                }  
-                servers = getSelected()
-                command = $("#textarea-input").val()
-                $.ajax({
+                                    return servers.join(" ");  
+                                }  
+                                servers = getSelected()
+                                command = $("#textarea-input").val()
+                                $.ajax({
     
-                    url: '/job/exec_cmd',
-                    dataType: "json",
-                    type: "get",
-                    data: {"exec_user_name":exec_name,
-                        "servers":servers,
-                        "command":command,},
+                                    url: '/job/exec_cmd',
+                                    dataType: "json",
+                                    type: "get",
+                                    data: {"exec_user_name":exec_name,
+                                        "servers":servers,
+                                        "command":command,},
     
-                    success: function(result) {  
-                        console.log("success")
-                        appand(result)
-                        $("#exec").disabled=false;
-                    },
+                                    success: function(result) {  
+                                        console.log("success")
+                                        appand(result)
+                                        $("#exec").disabled=false;
+                                    },
     
-                    error: function(data) {
-                        console.log(data,"请求出错");
-                        $("#exec").disabled=false;
-                    }
-                });
-                });
+                                    error: function(data) {
+                                        console.log(data,"请求出错");
+                                        $("#exec").disabled=false;
+                                    }
+                                });
+                                });
     </script>
 {% endblock content %}

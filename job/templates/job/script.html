@@ -58,7 +58,7 @@
                                 <option value="" label="default">
                                 </option>
                                 {% for server in servers %}
-                                    <option value={{ server.name }}>
+                                    <option value={{ server.id }}>
                                         {{ server.name }}
                                     </option>
                                 {% endfor %}
@@ -70,14 +70,14 @@
                             <strong class="card-title">选择要执行的脚本</strong>
                         </div>
                         <div class="card-body">
-                            <select id="exec_user"
+                            <select id="script"
                                     data-placeholder="选择要执行的脚本"
                                     class="standardSelect"
                                     tabindex="1">
                                 <option value="" label="default">
                                 </option>
                                 {% for script in scripts %}
-                                    <option value={{ script.name }}>
+                                    <option value={{ script.id }}>
                                         {{ script.name }}
                                     </option>
                                 {% endfor %}
@@ -89,7 +89,7 @@
                             <strong class="card-title">选择执行的剧本</strong>
                         </div>
                         <div class="card-body">
-                            <select id="exec_user"
+                            <select id="playbook"
                                     data-placeholder="选择执行 剧本"
                                     class="standardSelect"
                                     tabindex="1">
@@ -97,7 +97,7 @@
                                 </option>
                                 {% for conf in confs %}
                                     {% if conf.type != "hosts" %}
-                                        <option value={{ conf.name }} >
+                                        <option value={{ conf.id }}>
                                             {{ conf.name }}
                                         </option>
                                     {% endif %}
@@ -124,45 +124,50 @@
         });
     </script>
     <script>
-        function appand(log){  
-            var html = '<pre style="color: white">' + log +'</pre>';
-                                            $(html).appendTo($("#log"))
-                                        }
-            
-                            $("#exec").click(function() {
+    function appand(log){  
+        var html = '<pre style="color: white">' + log +'</pre>';
+        $(html).appendTo($("#log"))
+    }
 
-                                $("#exec").disabled=true;
-                                exec_name = $("#exec_user option:selected").val()
-                                function getSelected() {  
-                                    var servers=[];;  
-                                    $('#server option:selected').each(function(){  
-                                        servers.push($(this).val())  
-                                    })  
-            
-                                    return servers.join(" ");  
-                                }  
-                                servers = getSelected()
-                                command = $("#textarea-input").val()
-                                $.ajax({
-    
-                                    url: '/job/exec_cmd',
-                                    dataType: "json",
-                                    type: "get",
-                                    data: {"exec_user_name":exec_name,
-                                        "servers":servers,
-                                        "command":command,},
-    
-                                    success: function(result) {  
-                                        console.log("success")
-                                        appand(result)
-                                        $("#exec").disabled=false;
-                                    },
-    
-                                    error: function(data) {
-                                        console.log(data,"请求出错");
-                                        $("#exec").disabled=false;
-                                    }
-                                });
-                                });
+    $("#exec").click(function() {
+
+        $("#exec").disabled=true;
+        exec_name = $("#exec_user option:selected").val()
+        script_id = $("#script option:selected").val()
+        playbook_id = $("#playbook option:selected").val()
+
+        function getSelected() {  
+            var servers=[];;  
+            $('#server option:selected').each(function(){  
+                servers.push($(this).val())  
+            })  
+
+            return servers.join(" ");  
+        }  
+        
+        server_ids = getSelected()
+        $.ajax({
+
+            url: '/job/exec_script',
+            dataType: "json",
+            type: "get",
+            data: {"exec_user_name":exec_name,
+                "server_ids":server_ids,
+                "command":command,
+                "script_id":script_id,
+                "playbook_id":playbook_id,},
+
+            success: function(result) {  
+                console.log("success")
+                appand(result)
+                $("#exec").disabled=false;
+            },
+
+            error: function(data) {
+                console.log(data,"请求出错");
+                $("#exec").disabled=false;
+            }
+        });
+    });
     </script>
 {% endblock content %}

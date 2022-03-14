@@ -58,6 +58,7 @@ def script(request):
 
 # 执行脚本方法
 def exec_script(request):
+    # 实现的不理想，待重构
 
     # 命令及文件
     ansible = '/usr/local/bin/ansible-playbook'

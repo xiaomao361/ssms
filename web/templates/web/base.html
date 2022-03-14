@@ -73,9 +73,6 @@
                                 <li>
                                     <i class="menu-icon fa fa-envelope"></i><a href="/notice/list">站内信</a>
                                 </li>
-                                <li>
-                                    <i class="menu-icon fa fa-inbox"></i><a href="#">收件箱</a>
-                                </li>
                             </ul>
                         </li>
                         <li class="menu-title">作业</li>
@@ -190,34 +187,6 @@
                                     {% endfor %}
                                 </div>
                             </div>
-                            <div class="dropdown for-message">
-                                <button class="btn btn-secondary dropdown-toggle"
-                                        type="button"
-                                        id="message"
-                                        data-toggle="dropdown"
-                                        aria-haspopup="true"
-                                        aria-expanded="false">
-                                    <i class="fa fa-envelope"></i>
-                                    <span class="count bg-primary">4</span>
-                                </button>
-                                <div class="dropdown-menu" aria-labelledby="message">
-                                    <p class="red">
-                                        你有xx封邮件
-                                    </p>
-                                    <a class="dropdown-item media" href="#">
-                                        <span class="photo media-left">
-                                            <img alt="avatar" src="{% static 'images/avatar/1.jpg' %}">
-                                        </span>
-                                        <div class="message media-body">
-                                            <span class="name float-left">来自谁</span>
-                                            <span class="time float-right">时间信息</span>
-                                            <p>
-                                                内容
-                                            </p>
-                                        </div>
-                                    </a>
-                                </div>
-                            </div>
                         </div>
                         <div class="user-area dropdown float-right">
                             <a href="#"
@@ -273,7 +242,6 @@
         <script src="{% static 'assets/js/init/fullcalendar.min.js' %}"></script>
         <script src="{% static 'assets/js/init/fullcalendar-init.js' %}"></script>
         <script src="{% static 'assets/js/lib/chosen/chosen.jquery.min.js' %}"></script>
-        
         <!--Local Stuff-->
         {% block script %}
         {% endblock script %}

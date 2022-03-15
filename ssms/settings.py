@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'conf', # 配置模块
     'notice', # 消息模块
     'job', # 任务模块
+    'django_apscheduler', # 定时任务
 ]
 
 MIDDLEWARE = [

@@ -145,14 +145,14 @@
             return servers.join(" ");  
         }  
         
-        server_ids = getSelected()
+        servers_id = getSelected()
         $.ajax({
 
             url: '/job/exec_script',
             dataType: "json",
             type: "get",
             data: {"exec_user_name":exec_name,
-                "server_ids":server_ids,
+                "servers_id":servers_id,
                 "command":command,
                 "script_id":script_id,
                 "playbook_id":playbook_id,},

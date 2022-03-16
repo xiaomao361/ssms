@@ -36,7 +36,7 @@ def make_file(request):
     if request.GET.get('conf_id'):
         conf_id = request.GET.get('conf_id')
         content = models.Conf.objects.get(id=conf_id)
-        file_name = './tmp/hosts'        
+        file_name = './tmp/'  + content.name       
         try:
             with open(file_name, "w+", newline='') as f:
                 f.write(content.content)

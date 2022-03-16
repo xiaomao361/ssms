@@ -136,9 +136,6 @@ try:
     # @register_job(scheduler, 'cron', day_of_week='mon-fri', hour='9', minute='30', second='10',id='task_time', replace_existing=True)
     tasks = models.CronTask.objects.all()
     for task in tasks:
-        print(task.type, task.day_of_week, task.hour,
-              task.minute, task.second, task.name)
-        
         if task.type == 'cron':
             @register_job(scheduler, task.type, day_of_week=task.day_of_week, hour=task.hour, minute=task.minute, second=task.second, id=task.name, replace_existing=True)
             def my_job():

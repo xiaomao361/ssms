@@ -123,34 +123,45 @@ def run_script(user, servers_id, script_id, playbook_id):
     return result
 
 
-# 定时任务
-# 开启定时工作
-try:
-    # 实例化调度器
-    scheduler = BackgroundScheduler()
-    # 调度器使用DjangoJobStore()
-    scheduler.add_jobstore(DjangoJobStore(), "default")
-    # 设置定时任务，选择方式为interval，时间间隔为10s
-    # @register_job(scheduler,"interval", seconds=10)
-    # 另一种方式为每天固定时间执行任务，对应代码为：
-    # @register_job(scheduler, 'cron', day_of_week='mon-fri', hour='9', minute='30', second='10',id='task_time', replace_existing=True)
+# 定时任务列表
+def tasks(request):
     tasks = models.CronTask.objects.all()
     for task in tasks:
-        if task.type == 'cron':
-            @register_job(scheduler, task.type, day_of_week=task.day_of_week, hour=task.hour, minute=task.minute, second=task.second, id=task.name, replace_existing=True)
-            def my_job():
-                print(task.user, task.servers, task.script, task.playbook)
-                # run_script(user=task.user, servers_id=task.servers,
-                #           script_id=task.script, playbook_id=task.playbook)
-        elif task.type == 'interval':
-            @register_job(scheduler,"interval", seconds=int(task.second), id=task.name, replace_existing=True)
-            def my_job():
-                print(task.user, task.servers, task.script, task.playbook)
-                # run_script(user=task.user, servers_id=task.servers,
-                #           script_id=task.script, playbook_id=task.playbook)
-    register_events(scheduler)
-    scheduler.start()
-except Exception as e:
-    print(e)
-    # 有错误就停止定时器
-    scheduler.shutdown()
+          print(type(task.servers))
+    return render(request, 'job/tasks.html',
+                  {'tasks': tasks})
+
+# 注册定时任务
+def task_register(request):
+
+    # 定时任务
+    # 开启定时工作
+    try:
+        # 实例化调度器
+        scheduler = BackgroundScheduler()
+        # 调度器使用DjangoJobStore()
+        scheduler.add_jobstore(DjangoJobStore(), "default")
+        # 设置定时任务，选择方式为interval，时间间隔为10s
+        # @register_job(scheduler,"interval", seconds=10)
+        # 另一种方式为每天固定时间执行任务，对应代码为：
+        # @register_job(scheduler, 'cron', day_of_week='mon-fri', hour='9', minute='30', second='10',id='task_time', replace_existing=True)
+        tasks = models.CronTask.objects.all()
+        for task in tasks:
+            if task.type == 'cron':
+                @register_job(scheduler, task.type, day_of_week=task.day_of_week, hour=task.hour, minute=task.minute, second=task.second, id=task.name, replace_existing=True)
+                def my_job():
+                    print(task.user, task.servers, task.script, task.playbook)
+                    # run_script(user=task.user, servers_id=task.servers,
+                    #           script_id=task.script, playbook_id=task.playbook)
+            elif task.type == 'interval':
+                @register_job(scheduler,"interval", seconds=int(task.second), id=task.name, replace_existing=True)
+                def my_job():
+                    print(task.user, task.servers, task.script, task.playbook)
+                    # run_script(user=task.user, servers_id=task.servers,
+                    #           script_id=task.script, playbook_id=task.playbook)
+        register_events(scheduler)
+        scheduler.start()
+    except Exception as e:
+        print(e)
+        # 有错误就停止定时器
+        scheduler.shutdown()

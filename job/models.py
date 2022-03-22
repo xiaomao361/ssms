@@ -27,7 +27,8 @@ class CronTask(models.Model):
     script = models.ForeignKey(
         'script.Script', on_delete=models.CASCADE, default="", verbose_name='执行脚本')
     playbook = models.ForeignKey(
-        'conf.Conf', on_delete=models.CASCADE, default="", verbose_name='执行剧本')    
+        'conf.Conf', on_delete=models.CASCADE, default="", verbose_name='执行剧本')
+    is_load = models.BooleanField(default=False, verbose_name='是否加载')
     c_time = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

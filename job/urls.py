@@ -23,5 +23,6 @@ urlpatterns = [
     url(r'^cmd/', views.cmd),
     url(r'^exec_cmd/', views.exec_cmd),
     url(r'^script/', views.script),
+    url(r'^tasks/', views.tasks),
 
 ]

@@ -2,6 +2,7 @@ from django.shortcuts import render
 from conf import models
 from django.shortcuts import HttpResponse
 import json
+import subprocess
 
 
 # Create your views here.
@@ -35,12 +36,26 @@ def make_file(request):
     data = {}
     if request.GET.get('conf_id'):
         conf_id = request.GET.get('conf_id')
-        content = models.Conf.objects.get(id=conf_id)
-        file_name = './tmp/'  + content.name       
+        conf = models.Conf.objects.get(id=conf_id)
+
+        # 确定文件后缀名
+        if str(conf.type) == 'hosts':
+            file_name = './tmp/'  + conf.name  
+        else:
+            file_name = './tmp/'  + conf.name  + '.yaml' 
+        
         try:
             with open(file_name, "w+", newline='') as f:
-                f.write(content.content)
+                f.write(conf.content)
             f.close()
+
+            # 移除第一行及最后一行，markdown格式代码块标记
+            # for mac
+            cmd = "sed -i '' '1d' " + file_name + ' && ' + "sed -i '' '$d' " + file_name
+            # fir linux 
+            # cmd = "sed -i  '1d' " + file_name + ' && ' + "sed -i  '$d' " + file_name
+
+            subprocess.getoutput(cmd)
             data.update(status='success')
         except Exception as e:
             data.update(status=e)

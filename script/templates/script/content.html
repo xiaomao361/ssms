@@ -1,37 +1,40 @@
-{% extends 'web/base.html' %}
+{% extends "web/base.html" %}
 {% load static %}
-{% block title %} 内容页 {% endblock %}
-
+{% block title %}
+    内容页
+{% endblock title %}
 {% block content %}
-
-<link href="{% static 'mdeditor/css/editormd.min.css' %}" rel="stylesheet">
-<link href="{% static 'mdeditor/css/editormd.preview.css' %}" rel="stylesheet">
-
-<div class="breadcrumbs">
-    <div class="breadcrumbs-inner">
-        <div class="row m-0">
-            <div class="col-sm-4">
-                <div class="page-header float-left">
-                    <div class="page-title">
-                        <h1>仪表盘</h1>
+    <link href="{% static 'mdeditor/css/editormd.min.css' %}" rel="stylesheet">
+    <link href="{% static 'mdeditor/css/editormd.preview.css' %}"
+          rel="stylesheet">
+    <div class="breadcrumbs">
+        <div class="breadcrumbs-inner">
+            <div class="row m-0">
+                <div class="col-sm-4">
+                    <div class="page-header float-left">
+                        <div class="page-title">
+                            <h1>仪表盘</h1>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-sm-8">
-                <div class="page-header float-right">
-                    <div class="page-title">
-                        <ol class="breadcrumb text-right">
-                            <li><a href="/index/">仪表盘</a></li>
-                            <li><a href="#">脚本</a></li>
-                            <li class="active">{{content.language}}</li>
-                        </ol>
+                <div class="col-sm-8">
+                    <div class="page-header float-right">
+                        <div class="page-title">
+                            <ol class="breadcrumb text-right">
+                                <li>
+                                    <a href="/index/">仪表盘</a>
+                                </li>
+                                <li>
+                                    <a href="#">脚本</a>
+                                </li>
+                                <li class="active">{{ content.language }}</li>
+                            </ol>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
     <div class="content">
         <div class="animated fadeIn">
             <div class="ui-typography">
@@ -39,40 +42,39 @@
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-header">
-                                <strong class="card-title" v-if="headerText">{{content.language}}</strong>
+                                <strong class="card-title" v-if="headerText">{{ content.language }}</strong>
                             </div>
                             <div class="card-body">
                                 <div class="typo-headers">
-                                
-                                <footer class="blockquote-footer">作者: {{content.author}}</footer>
-                            </div>
-                            
-                            <div class="typo-articles">     
-                                <p>  
-                                                       
-                                    <div id="content"><textarea>{{ content.content }}</textarea></div>
-                                    
-                                </p>
+                                    <footer class="blockquote-footer">
+                                        作者: {{ content.author }}
+                                    </footer>
+                                </div>
+                                <div class="typo-articles">
+                                    <p>
+                                        <div id="content">
+                                            <textarea>{{ content.content }}</textarea>
+                                        </div>
+                                    </p>
+                                </div>
                             </div>
                         </div>
-                    </div>  
-                </div>  
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</div>
-<div class="clearfix"></div>
-
-<script src="{% static 'mdeditor/js/jquery.min.js' %}"></script>
-  <script src="{% static 'mdeditor/js/editormd.min.js' %}"></script>
-  <script src="{% static 'mdeditor/js/lib/marked.min.js' %}"></script>
-  <script src="{% static 'mdeditor/js/lib/prettify.min.js' %}"></script>
-  <script src="{% static 'mdeditor/js/lib/raphael.min.js' %}"></script>
-  <script src="{% static 'mdeditor/js/lib/underscore.min.js' %}"></script>
-  <script src="{% static 'mdeditor/js/lib/sequence-diagram.min.js' %}"></script>
-  <script src="{% static 'mdeditor/js/lib/flowchart.min.js' %}"></script>
-  <script src="{% static 'mdeditor/js/lib/jquery.flowchart.min.js' %}"></script>
-<script>
+    <div class="clearfix"></div>
+    <script src="{% static 'mdeditor/js/jquery.min.js' %}"></script>
+    <script src="{% static 'mdeditor/js/editormd.min.js' %}"></script>
+    <script src="{% static 'mdeditor/js/lib/marked.min.js' %}"></script>
+    <script src="{% static 'mdeditor/js/lib/prettify.min.js' %}"></script>
+    <script src="{% static 'mdeditor/js/lib/raphael.min.js' %}"></script>
+    <script src="{% static 'mdeditor/js/lib/underscore.min.js' %}"></script>
+    <script src="{% static 'mdeditor/js/lib/sequence-diagram.min.js' %}"></script>
+    <script src="{% static 'mdeditor/js/lib/flowchart.min.js' %}"></script>
+    <script src="{% static 'mdeditor/js/lib/jquery.flowchart.min.js' %}"></script>
+    <script>
   $(function () {
       // js 解析markdown
       editormd.markdownToHTML("content", {
@@ -89,6 +91,5 @@
       })
   })
 
-</script>
-
-{% endblock %}
+    </script>
+{% endblock content %}

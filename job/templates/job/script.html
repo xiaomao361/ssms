@@ -142,7 +142,7 @@
                 servers.push($(this).val())  
             })  
 
-            return servers.join(" ");  
+            return servers.join(",");  
         }  
         
         servers_id = getSelected()
@@ -153,7 +153,6 @@
             type: "get",
             data: {"exec_user_name":exec_name,
                 "servers_id":servers_id,
-                "command":command,
                 "script_id":script_id,
                 "playbook_id":playbook_id,},
 

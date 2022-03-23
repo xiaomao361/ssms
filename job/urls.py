@@ -24,6 +24,7 @@ urlpatterns = [
     url(r'^exec_cmd/', views.exec_cmd),
     url(r'^script/', views.script),
     url(r'^tasks/', views.tasks),
+    url(r'^exec_script/', views.exec_script),
     url(r'^load/', views.load),
     url(r'^cancel/', views.cancel),
 

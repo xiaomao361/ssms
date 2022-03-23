@@ -89,14 +89,14 @@ def exec_script(request):
         servers_id = request.GET.getlist('servers_id')
         script_id = request.GET.get('script_id')
         playbook_id = request.GET.get('playbook_id')
+        
 
-        result = run_script(exec_user_name, servers_id, script_id, playbook_id)
+        result = run_script(exec_user_name, str(servers_id[0]).split(','), script_id, playbook_id) # list中第一个元素是所有数据，所以取第一个值，转字符，用逗号切割
         return HttpResponse(json.dumps(result))
 
 
 # 执行脚本的方法
 def run_script(user, servers_id, script_id, playbook_id):
-
     # 命令及文件
     ansible = '/usr/local/bin/ansible-playbook'
     hosts_file = './tmp/tmp_hosts'
@@ -107,13 +107,15 @@ def run_script(user, servers_id, script_id, playbook_id):
     hosts = []
     for server_id in servers_id:
         server = property_models.Server.objects.get(id=server_id)
-        hosts.append("[server.name]")
-        hosts.append(server.id)
+        host_name = '[' + server.name + ']'
+        hosts.append(host_name)
+        hosts.append(server.ip)
+    print("制作hosts文件:", hosts)
 
     try:
         with open(hosts_file, "w+", newline='') as f:
             for line in hosts:
-                f.write(line)
+                f.write(line + '\n') # 换行
         f.close()
     except Exception as e:
         print(e)
@@ -126,7 +128,7 @@ def run_script(user, servers_id, script_id, playbook_id):
         f.close()
         
         # for mac
-        cmd = "sed -i '' '1d' " + script + ' && ' + "sed -i '' '$d' " + script
+        cmd = "sed -i '' '1d' " + script_file + ' && ' + "sed -i '' '$d' " + script_file
         # fir linux 
         # cmd = "sed -i  '1d' " + script + ' && ' + "sed -i  '$d' " + script
 
@@ -138,11 +140,11 @@ def run_script(user, servers_id, script_id, playbook_id):
     playbook = conf_models.Conf.objects.get(id=playbook_id)
     try:
         with open(playbook_file, "w+", newline='') as f:
-            f.write(script.content)
+            f.write(playbook.content)
         f.close()
 
         # for mac
-        cmd = "sed -i '' '1d' " + script + ' && ' + "sed -i '' '$d' " + script
+        cmd = "sed -i '' '1d' " + playbook_file + ' && ' + "sed -i '' '$d' " + playbook_file
         # fir linux 
         # cmd = "sed -i  '1d' " + script + ' && ' + "sed -i  '$d' " + script
 
@@ -150,11 +152,11 @@ def run_script(user, servers_id, script_id, playbook_id):
     except Exception as e:
         print(e)
 
-    cmd = ansible-playbook + ' -i ' + hosts + \
-        ' ' + playbook + ' -e ' + ' user=' + user
+    cmd = ansible + ' -i ' + hosts_file + \
+        ' ' + playbook_file + ' -e ' + ' user=' + user
 
     # result = subprocess.getoutput(cmd)
-    result = print(cmd)
+    result = cmd
 
     return result
 

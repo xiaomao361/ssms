@@ -131,7 +131,10 @@ def run_script(user, servers_id, script_id, playbook_id):
         cmd = "sed -i '' '1d' " + script_file + ' && ' + "sed -i '' '$d' " + script_file
         # fir linux 
         # cmd = "sed -i  '1d' " + script + ' && ' + "sed -i  '$d' " + script
-
+        subprocess.getoutput(cmd)
+        
+        # 转格式为unix格式
+        cmd = "dos2unix " + script_file
         subprocess.getoutput(cmd)
     except Exception as e:
         print(e)

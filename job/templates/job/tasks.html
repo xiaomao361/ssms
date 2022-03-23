@@ -74,13 +74,13 @@
                                             <td>{{ task.playbook }}</td>
                                             <td>
                                                 {% if task.is_load %}
-                                                <button id={{ task.id }} type="button" data-id={{ task.id }} class="btn btn-success btn-sm">重载配置
+                                                <button id="load" type="button" data-id={{ task.id }} class="load btn-success btn-sm">重载配置
                                                 </button>
                                                 {% else %}
-                                                <button id={{ task.id }} type="button" data-id={{ task.id }} class="btn btn-success btn-sm">加载配置
+                                                <button id="load" type="button" data-id={{ task.id }} class="load btn-success btn-sm">加载配置
                                                 </button>
                                                 {% endif %}
-                                                <button id={{ task.id }} type="button" data-id={{ task.id }} class="btn btn-danger btn-sm">注销配置
+                                                <button id="cancel" type="button" data-id={{ task.id }} class="cancel btn-danger btn-sm">注销配置
                                                 </button>
                                             </td>
                                         </tr>
@@ -99,25 +99,47 @@
     <script src="{% static 'assets/js/jquery-3.0.0.min.js' %}"></script>
 
 <script>
-$(".btn").click(function() {
+$(".load").click(function() {
+    $("#load").disabled=true;
     var val=$(this).attr("data-id")
-    document.getElementById(val).disabled=true;
     $.ajax({
-        url: '/conf/make_file',
+        url: '/job/load',
         dataType: "json",
         type: "get",
-        data: {"conf_id":val},
+        data: {"task_id":val},
     
         success: function(result) {  
-            alert(result.status)
-            document.getElementById(val).disabled=false;
+            alert(result)
+            $("#load").disabled=false;
         },
     
         error: function(data) {
             console.log(data,"请求出错");
-            document.getElementById(val).disabled=false;
+            $("#load").disabled=false;
         }
     });
 });
+
+$(".cancel").click(function() {
+    $("#cancel").disabled=true;
+    var val=$(this).attr("data-id")
+    $.ajax({
+        url: '/job/cancel',
+        dataType: "json",
+        type: "get",
+        data: {"task_id":val},
+    
+        success: function(result) {  
+            alert(result)
+            $("#cancel").disabled=false;
+        },
+    
+        error: function(data) {
+            console.log(data,"请求出错");
+            $("#cancel").disabled=false;
+        }
+    });
+});
+
 </script>
 {% endblock content %}

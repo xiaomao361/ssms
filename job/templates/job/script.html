@@ -131,7 +131,7 @@
 
     $("#exec").click(function() {
 
-        $("#exec").disabled=true;
+        $("#exec").attr("disabled", true);
         exec_name = $("#exec_user option:selected").val()
         script_id = $("#script option:selected").val()
         playbook_id = $("#playbook option:selected").val()
@@ -147,7 +147,6 @@
         
         servers_id = getSelected()
         $.ajax({
-
             url: '/job/exec_script',
             dataType: "json",
             type: "get",
@@ -159,12 +158,12 @@
             success: function(result) {  
                 console.log("success")
                 appand(result)
-                $("#exec").disabled=false;
+                $("#exec").attr("disabled", false);
             },
 
             error: function(data) {
                 console.log(data,"请求出错");
-                $("#exec").disabled=false;
+                $("#exec").attr("disabled", false);
             }
         });
     });

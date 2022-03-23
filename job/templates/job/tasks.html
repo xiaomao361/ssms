@@ -100,7 +100,7 @@
 
 <script>
 $(".load").click(function() {
-    $("#load").disabled=true;
+    $("#load").attr("disabled", true);
     var val=$(this).attr("data-id")
     $.ajax({
         url: '/job/load',
@@ -110,18 +110,18 @@ $(".load").click(function() {
     
         success: function(result) {  
             alert(result)
-            $("#load").disabled=false;
+            $("#load").attr("disabled", false);
         },
     
         error: function(data) {
             console.log(data,"请求出错");
-            $("#load").disabled=false;
+            $("#load").attr("disabled", false);
         }
     });
 });
 
 $(".cancel").click(function() {
-    $("#cancel").disabled=true;
+    $("#cancel").attr("disabled", true);
     var val=$(this).attr("data-id")
     $.ajax({
         url: '/job/cancel',
@@ -131,12 +131,12 @@ $(".cancel").click(function() {
     
         success: function(result) {  
             alert(result)
-            $("#cancel").disabled=false;
+            $("#cancel").attr("disabled", false);
         },
     
         error: function(data) {
             console.log(data,"请求出错");
-            $("#cancel").disabled=false;
+            $("#cancel").attr("disabled", false);
         }
     });
 });

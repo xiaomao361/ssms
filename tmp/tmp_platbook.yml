@@ -1,8 +1,9 @@
 ---
 - hosts: all
-  remote_user: {{user}}
-    home: ./tmp
+  remote_user: "{{user}}"
+  vars:
     target_path: /tmp
+    user: "{{user}}"
   tasks:
     - name: copy soft
       copy:
@@ -13,14 +14,7 @@
         group: "{{ item.group }}"
       with_items:
         - {
-            src: "{{home}}/tmp_hosts",
-            dest: "{{target_path}}/",
-            owner: "heals",
-            group: "heals",
-            mode: "0644",
-          }
-	    - {
-            src: "{{home}}/tmp_script",
+            src: "tmp_script",
             dest: "{{target_path}}/",
             owner: "heals",
             group: "heals",

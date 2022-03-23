@@ -100,8 +100,8 @@ def run_script(user, servers_id, script_id, playbook_id):
     # 命令及文件
     ansible = '/usr/local/bin/ansible-playbook'
     hosts_file = './tmp/tmp_hosts'
-    script_file = './tmp/tmp_script'
-    playbook_file = './tmp/tmp_platbook.yml'
+    script_file = './tmp/files/tmp_script'
+    playbook_file = './tmp/tmp_playbook.yml'
 
     # make hosts file
     hosts = []
@@ -123,7 +123,7 @@ def run_script(user, servers_id, script_id, playbook_id):
     # make script file
     script = script_models.Script.objects.get(id=script_id)
     try:
-        with open(script_file, "w+", newline='') as f:
+        with open(script_file, "w+") as f:
             f.write(script.content)
         f.close()
         
@@ -155,8 +155,8 @@ def run_script(user, servers_id, script_id, playbook_id):
     cmd = ansible + ' -i ' + hosts_file + \
         ' ' + playbook_file + ' -e ' + ' user=' + user
 
-    # result = subprocess.getoutput(cmd)
-    result = cmd
+    result = subprocess.getoutput(cmd)
+    # result = cmd
 
     return result
 
@@ -167,8 +167,10 @@ def tasks(request):
     return render(request, 'job/tasks.html',
                   {'tasks': tasks})
 
+
 def job():
         print("测试静态任务")
+
 
 # 加载/重载任务
 def load(request):

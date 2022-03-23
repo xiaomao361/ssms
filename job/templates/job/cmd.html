@@ -115,7 +115,7 @@
             
             $("#exec").click(function() {
 
-                $("#exec").disabled=true;
+                $("#exec").attr("disabled", true);
                 exec_name = $("#exec_user option:selected").val()
                 function getSelected() {  
                     var servers=[];;  
@@ -139,12 +139,12 @@
                     success: function(result) {  
                         console.log("success")
                         appand(result)
-                        $("#exec").disabled=false;
+                        $("#exec").attr("disabled", false);
                     },
     
                     error: function(data) {
                         console.log(data,"请求出错");
-                        $("#exec").disabled=false;
+                        $("#exec").attr("disabled", false);
                     }
                 });
                 });

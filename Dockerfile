@@ -6,7 +6,7 @@ WORKDIR /home
 
 ADD ./* /home/
 RUN apt-get update 
-RUN apt-get install ansible dos2unix
+RUN apt-get -y install ansible dos2unix
 RUN pip install -r requirements.txt
 
 ADD entrypoint.sh /usr/bin/entrypoint.sh

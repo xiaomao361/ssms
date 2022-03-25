@@ -6,6 +6,8 @@ from mdeditor.fields import MDTextField
 class Type(models.Model):
     name = models.CharField(
         max_length=50, unique=False, blank=False, verbose_name='配置类型', help_text='配置类型')
+    extension = models.CharField(
+        max_length=50, unique=False, blank=True, verbose_name='后缀名', help_text='后缀名')
     c_time = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

@@ -10,8 +10,78 @@ import subprocess
 from django.shortcuts import HttpResponse
 import json
 import re
+import os
 from apscheduler.schedulers.background import BackgroundScheduler
 from django_apscheduler.jobstores import DjangoJobStore, register_events, register_job
+
+
+# vars
+# ansible命令及需要文件的位置
+ansible = '/usr/local/bin/ansible'
+playbook = '/usr/local/bin/ansible-playbook'
+hosts = './tmp/hosts'
+hosts_file = './tmp/tmp_hosts'
+script_file = './tmp/files/tmp_script'
+playbook_file = './tmp/tmp_playbook.yml'
+
+
+# 公共制作hosts文件方法
+def make_hosts_file(servers_id):
+    hosts = []
+    for server_id in servers_id:
+        server = property_models.Server.objects.get(id=server_id)
+        host_name = '[' + server.name + ']'
+        hosts.append(host_name)
+        hosts.append(server.ip)
+    print("制作hosts文件:", hosts)
+
+    try:
+        with open(hosts_file, "w+", newline='') as f:
+            for line in hosts:
+                f.write(line + '\n')  # 换行
+        f.close()
+    except Exception as e:
+        print(e)
+
+
+# 公共制作script文件方法
+def make_script_file(script_id):
+    script = script_models.Script.objects.get(id=script_id)
+    try:
+        with open(script_file, "w+") as f:
+            f.write(script.content)
+        f.close()
+
+        # for mac
+        cmd = "sed -i '' '1d' " + script_file + ' && ' + "sed -i '' '$d' " + script_file
+        # fir linux
+        # cmd = "sed -i  '1d' " + script + ' && ' + "sed -i  '$d' " + script
+        subprocess.getoutput(cmd)
+
+        # 转格式为unix格式
+        cmd = "dos2unix " + script_file
+        subprocess.getoutput(cmd)
+    except Exception as e:
+        print(e)
+
+
+# 公共制作playbook文件方法
+def make_playbook_file(playbook_id):
+    playbook = conf_models.Conf.objects.get(id=playbook_id)
+    try:
+        with open(playbook_file, "w+", newline='') as f:
+            f.write(playbook.content)
+        f.close()
+
+        # for mac
+        cmd = "sed -i '' '1d' " + playbook_file + \
+            ' && ' + "sed -i '' '$d' " + playbook_file
+        # fir linux
+        # cmd = "sed -i  '1d' " + script + ' && ' + "sed -i  '$d' " + script
+
+        subprocess.getoutput(cmd)
+    except Exception as e:
+        print(e)
 
 
 # 启动任务调度器
@@ -47,11 +117,6 @@ def cmd(request):
 
 # 批量命令执行方法
 def exec_cmd(request):
-
-    # ansible 命令及hosts文件配置
-    ansible = '/usr/local/bin/ansible'
-    hosts = './tmp/hosts'
-
     if request.GET.get('exec_user_name') and request.GET.getlist('servers') and request.GET.get('command'):
         exec_user_name = request.GET.get('exec_user_name')
         servers = request.GET.getlist('servers')
@@ -81,86 +146,46 @@ def script(request):
                    'confs': confs})
 
 
-# 执行脚本接口
+# 执行接口
 def exec_script(request):
     # get id from front
-    if request.GET.get('exec_user_name') and request.GET.getlist('servers_id') and request.GET.get('script_id') and request.GET.get('playbook_id'):
-        exec_user_name = request.GET.get('exec_user_name')
-        servers_id = request.GET.getlist('servers_id')
-        script_id = request.GET.get('script_id')
-        playbook_id = request.GET.get('playbook_id')
-        
+    # if request.GET.get('exec_user_name') and request.GET.getlist('servers_id') and request.GET.get('script_id') and request.GET.get('playbook_id'):
+    exec_user_name = request.GET.get('exec_user_name')
+    servers_id = request.GET.getlist('servers_id')
+    playbook_id = request.GET.get('playbook_id')
 
-        result = run_script(exec_user_name, str(servers_id[0]).split(','), script_id, playbook_id) # list中第一个元素是所有数据，所以取第一个值，转字符，用逗号切割
-        return HttpResponse(json.dumps(result))
+    if request.GET.get('script_id'):
+        script_id = request.GET.get('script_id')
+        result = run_script(exec_user_name, str(servers_id[0]).split(
+            ','), script_id, playbook_id)  # list中第一个元素是所有数据，所以取第一个值，转字符，用逗号切割
+    else:
+        result = run_playbook(exec_user_name, str(servers_id[0]).split(
+            ','), playbook_id)
+    return HttpResponse(json.dumps(result))
 
 
 # 执行脚本的方法
 def run_script(user, servers_id, script_id, playbook_id):
-    # 命令及文件
-    ansible = '/usr/local/bin/ansible-playbook'
-    hosts_file = './tmp/tmp_hosts'
-    script_file = './tmp/files/tmp_script'
-    playbook_file = './tmp/tmp_playbook.yml'
-
     # make hosts file
-    hosts = []
-    for server_id in servers_id:
-        server = property_models.Server.objects.get(id=server_id)
-        host_name = '[' + server.name + ']'
-        hosts.append(host_name)
-        hosts.append(server.ip)
-    print("制作hosts文件:", hosts)
-
-    try:
-        with open(hosts_file, "w+", newline='') as f:
-            for line in hosts:
-                f.write(line + '\n') # 换行
-        f.close()
-    except Exception as e:
-        print(e)
+    make_hosts_file(servers_id)
 
     # make script file
-    script = script_models.Script.objects.get(id=script_id)
-    try:
-        with open(script_file, "w+") as f:
-            f.write(script.content)
-        f.close()
-        
-        # for mac
-        cmd = "sed -i '' '1d' " + script_file + ' && ' + "sed -i '' '$d' " + script_file
-        # fir linux 
-        # cmd = "sed -i  '1d' " + script + ' && ' + "sed -i  '$d' " + script
-        subprocess.getoutput(cmd)
-        
-        # 转格式为unix格式
-        cmd = "dos2unix " + script_file
-        subprocess.getoutput(cmd)
-    except Exception as e:
-        print(e)
+    make_script_file(script_id)
 
     # make playbook file
-    playbook = conf_models.Conf.objects.get(id=playbook_id)
-    try:
-        with open(playbook_file, "w+", newline='') as f:
-            f.write(playbook.content)
-        f.close()
+    make_playbook_file(playbook_id)
 
-        # for mac
-        cmd = "sed -i '' '1d' " + playbook_file + ' && ' + "sed -i '' '$d' " + playbook_file
-        # fir linux 
-        # cmd = "sed -i  '1d' " + script + ' && ' + "sed -i  '$d' " + script
-
-        subprocess.getoutput(cmd)
-    except Exception as e:
-        print(e)
-
-    cmd = ansible + ' -i ' + hosts_file + \
+    cmd = playbook + ' -i ' + hosts_file + \
         ' ' + playbook_file + ' -e ' + ' user=' + user
 
     result = subprocess.getoutput(cmd)
     # result = cmd
 
+    # 删除临时文件
+    files = {hosts_file, script_file, playbook_file}
+    for file in files:
+        if os.path.exists(file):
+            os.remove(file)
     return result
 
 
@@ -171,8 +196,9 @@ def tasks(request):
                   {'tasks': tasks})
 
 
+# 临时测试任务
 def job():
-        print("测试静态任务")
+    print("测试静态任务")
 
 
 # 加载/重载任务
@@ -182,7 +208,8 @@ def load(request):
     if task.type == 'cron':
         try:
             # 尝试注册任务
-            scheduler.add_job(job, 'cron', day_of_week=task.day_of_week, hour=task.hour, minute=task.minute, second=task.second, id=task.name, replace_existing=True)
+            scheduler.add_job(job, 'cron', day_of_week=task.day_of_week, hour=task.hour,
+                              minute=task.minute, second=task.second, id=task.name, replace_existing=True)
             # 更新加载状态
             if task.is_load == False:
                 models.CronTask.objects.filter(id=task_id).update(is_load=True)
@@ -193,7 +220,8 @@ def load(request):
             result = e
     elif task.type == 'interval':
         try:
-            scheduler.add_job(job, 'interval', seconds=int(task.second), id=task.name, replace_existing=True)
+            scheduler.add_job(job, 'interval', seconds=int(
+                task.second), id=task.name, replace_existing=True)
             if task.is_load == False:
                 models.CronTask.objects.filter(id=task_id).update(is_load=True)
             result = "载入成功"
@@ -210,9 +238,22 @@ def cancel(request):
         scheduler.remove_job(job_id=task.name)
         result = "注销成功"
     except Exception as e:
-            result = e
+        result = e
     if task.is_load == True:
-            models.CronTask.objects.filter(id=task_id).update(is_load=False)
+        models.CronTask.objects.filter(id=task_id).update(is_load=False)
     return HttpResponse(json.dumps(result))
 
 
+# 通用执行剧本的方法
+def run_playbook(user, servers_id, playbook_id):
+    make_hosts_file(servers_id)
+    make_playbook_file(playbook_id)
+    cmd = playbook + ' -i ' + hosts_file + \
+        ' ' + playbook_file + ' -e ' + ' user=' + user
+    result = subprocess.getoutput(cmd)
+    # 删除临时文件
+    files = {hosts_file, script_file, playbook_file}
+    for file in files:
+        if os.path.exists(file):
+            os.remove(file)
+    return result

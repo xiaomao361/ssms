@@ -1,3 +1,4 @@
+from statistics import mode
 from django.shortcuts import render
 from conf import models
 from django.shortcuts import HttpResponse
@@ -5,7 +6,6 @@ import json
 import subprocess
 
 
-# Create your views here.
 # 配置列表页
 def list(request):
     if request.GET.get('type_id'):
@@ -37,12 +37,12 @@ def make_file(request):
     if request.GET.get('conf_id'):
         conf_id = request.GET.get('conf_id')
         conf = models.Conf.objects.get(id=conf_id)
-
+        type = models.Type.objects.get(name=conf.type)
         # 确定文件后缀名
         if str(conf.type) == 'hosts':
             file_name = './tmp/'  + conf.name  
         else:
-            file_name = './tmp/'  + conf.name  + '.yaml' 
+            file_name = './tmp/files/'  + conf.name  + '.' + type.extension
         
         try:
             with open(file_name, "w+", newline='') as f:

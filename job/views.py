@@ -11,6 +11,7 @@ from django.shortcuts import HttpResponse
 import json
 import re
 import os
+import shutil
 from apscheduler.schedulers.background import BackgroundScheduler
 from django_apscheduler.jobstores import DjangoJobStore, register_events, register_job
 
@@ -252,8 +253,10 @@ def run_playbook(user, servers_id, playbook_id):
         ' ' + playbook_file + ' -e ' + ' user=' + user
     result = subprocess.getoutput(cmd)
     # 删除临时文件
-    files = {hosts_file, script_file, playbook_file}
+    files = {hosts_file, playbook_file}
     for file in files:
         if os.path.exists(file):
             os.remove(file)
+    shutil.rmtree('./tmp/files/')
+    os.system("mkdir ./tmp/files")
     return result

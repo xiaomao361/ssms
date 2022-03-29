@@ -1,6 +1,6 @@
 #! /bin/bash
 
-cd /home/
+cd /home/ssms/
 
 python manage.py makemigrations
 python manage.py migrate
